@@ -13,3 +13,12 @@ def post_detail(request, pk):
 
 def about(request):
     return render(request, 'blog/about.html', {'title': 'About'})
+
+def contact(request):
+    return render(request, 'blog/contact.html', {'title': 'Contact'})
+
+def search(request):
+    return render(request, 'blog/search.html', {'title': 'Search'})
+
+def privacy(request):
+    return render(request, 'blog/privacy.html', {'title': 'Privacy'})
