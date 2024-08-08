@@ -2,9 +2,11 @@ from django.shortcuts import render
 from .models import Post
 
 def home(request):
-    posts = Post.objects.all().order_by('-date_posted')
-    return render(request, 'blog/home.html', {'posts': posts})
-    
+    context = {
+        'posts': Post.objects.all()
+    }
+    return render(request, 'blog/home.html', context)
 
-
-# Add more views as needed, such as for viewing individual posts, adding posts, etc.
+def post_detail(request, pk):
+    post = Post.objects.get(pk=pk)
+    return render(request, 'blog/post_detail.html', {'post': post})
