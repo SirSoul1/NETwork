@@ -1,6 +1,15 @@
 {% extends 'blog/base.html' %}
 
-{% block title %}Privacy Policy{% endblock %}
+<head>
+
+    {% if title %}
+        <title>NET Blog - {{ title }}</title>
+    {% else %}
+        <title>NET Blog</title>
+    {% endif %}
+
+
+</head>
 
 {% block content %}
     <h2>Privacy Policy</h2>

@@ -1,6 +1,15 @@
 {% extends 'blog/base.html' %}
 
-{% block title %}Search{% endblock %}
+<head>
+
+    {% if title %}
+        <title>NET Blog - {{ title }}</title>
+    {% else %}
+        <title>NET Blog</title>
+    {% endif %}
+
+
+</head>
 
 {% block content %}
     <h2>Search</h2>

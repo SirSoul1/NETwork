@@ -1,18 +1,30 @@
 from django.shortcuts import render
 from .models import Post
 
-def home(request):
-    context = {
-        'posts': Post.objects.all()
+posts = [
+    {
+    'author' : 'CoreyMS',
+    'title' : 'Blog Post 1',
+    'content' : 'First post content',
+    'date_posted' : 'August 27, 2018'
+    },
+    {
+    'author' : 'Jane Doe',
+    'title' : 'Blog Post 2',
+    'content' : 'Second post content',
+    'date_posted' : 'August 28, 2018'
     }
-    return render(request, 'blog/home.html', context)
 
+]
 def post_detail(request, pk):
     post = Post.objects.get(pk=pk)
     return render(request, 'blog/post_detail.html', {'post': post})
 
 def home(request):
-    return render(request, 'blog/home.html', {'title': 'Home'})
+    context = {
+        'posts': posts
+    }
+    return render(request, 'blog/home.html', context)
 
 def about(request):
     return render(request, 'blog/about.html', {'title': 'About'})
@@ -25,3 +37,10 @@ def search(request):
 
 def privacy(request):
     return render(request, 'blog/privacy.html', {'title': 'Privacy'})
+
+def login(request):
+    return render(request, 'blog/login.html', {'title': 'Login'})
+
+def register(request):
+    return render(request, 'blog/register.html', {'title': 'Register'})
+

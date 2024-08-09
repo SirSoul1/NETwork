@@ -1,10 +1,13 @@
 {% extends 'blog/base.html' %}
 
-{% block title %}Home{% endblock %}
-
 {% block content %}
-    <h2>Welcome to NET Blog</h2>
-    <p>This is a blog site where you can read and share your thoughts on various topics.</p>
-    <p>Feel free to browse through our company posts and leave comments</p>
-    <p>Enjoy!</p>
-{% endblock %}
+
+    {% for post in posts %}
+
+        <h2> {{post.title}} </h2>
+        <p>By {{ post.author }} on {{ post.date_posted }}</p>
+        <p>{{ post.content }}</p>
+
+    {% endfor %}
+
+{% endblock content %}
