@@ -1,0 +1,43 @@
+html, body {
+    height: 100%; /* Ensure that the html and body are taking full height */
+    margin: 0; /* Remove default margin */
+    background-color: antiquewhite; /* Light gray background color */
+}
+
+#main-content {
+    flex: 1 0 auto; /* Allow the content to expand and shrink but not to the extent of pushing the footer */
+}
+
+#footer-container {
+    flex-shrink: 0; /* Prevent the footer from shrinking */
+    background-color: #343a40; /* Dark footer to contrast with light body background */
+}
+
+/* Flexbox setup */
+.flex-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+}
+
+.navbar-custom {
+    background-color: #343a40; /* Ensures navbar is consistent with footer */
+    margin-bottom: 20px; /* Adds some space below the navbar */
+}
+
+.input-group .form-control {
+    border-right: 0; /* Smoothens the input group appearance */
+}
+
+.input-group .input-group-append .btn {
+    border-left: 0; /* Aligns button seamlessly with input */
+}
+
+.footer {
+    background-color: #343a40; /* Dark footer background for contrast */
+    color: white; /* Ensure text is white for readability */
+}
+
+.footer a {
+    color: #ffffff; /* Ensures links are also white */
+}
