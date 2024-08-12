@@ -1,19 +1,26 @@
 {% extends "blog/base.html" %}
 {% block content %}
-    {% for post in posts %}
-        <div class="container my-4 p-4 border border-secondary rounded shadow-sm bg-white">
-            <article class="media content-section">
-                <div class="media-body">
-                    <div class="article-metadata">
-                        <a class="mr-2" href="#">{{ post.author }}</a>
-                        <small class="text-muted">{{ post.date_posted|date:"D d M Y" }}</small>
-                    </div>
-                    <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
-                    <div class="article-content-container">
-                        <p class="article-content">{{ post.content }}</p>
+    <div class="container my-4">
+        <div class="row">
+            {% for post in posts %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <a href="#" class="text-dark font-weight-bold">{{ post.author }}</a>
+                                <small class="text-muted">{{ post.date_posted|date:"D d M Y" }}</small>
+                            </div>
+                            <h5 class="card-title">
+                                <a class="text-dark" href="#">{{ post.title }}</a>
+                            </h5>
+                            <p class="card-text">{{ post.content|truncatewords:20 }}</p>
+                        </div>
+                        <div class="card-footer bg-transparent border-0">
+                            <a href="#" class="btn btn-outline-primary btn-sm">Read More</a>
+                        </div>
                     </div>
                 </div>
-            </article>
+            {% endfor %}
         </div>
-    {% endfor %}
+    </div>
 {% endblock content %}

@@ -57,7 +57,7 @@
 <body>
     <header class="site-header">
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <div class="container">
+            <div class="container-fluid">
                 <a class="navbar-brand mr-4" href="{% url 'blog-home' %}">NET Blog</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -80,8 +80,8 @@
     </header>
 
     <main role="main" class="container mt-5">
-        <div class="row">
-            <div class="col-lg-8 mb-4">
+        <div class="row mb-2">
+            <div class="col-md-8">
                 <div class="bg-white p-4 shadow rounded border border-light">
                     {% if messages %}
                         {% for message in messages %}
