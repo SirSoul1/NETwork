@@ -13,9 +13,10 @@
         html, body {
             height: 100%; /* Ensure full height for the page */
             margin: 0; /* Remove default margin */
-            background-color: antiquewhite; /* Background color */
+            background-color: whitesmoke; /* Background color */
             display: flex;
             flex-direction: column;
+            padding-top: 10px;
         }
 
         .container-flex {
@@ -77,27 +78,44 @@
         </nav>
     </header>
 
-    <main role="main" class="container-flex container mt-5">
+    <main role="main" class="container mt-5">
         <div class="row">
-            <div class="col-md-8">
-                {% block content %}{% endblock %}
+            <div class="col-lg-8 mb-4">
+                <div class="bg-white p-4 shadow rounded border border-light">
+                    {% block content %}{% endblock %}
+                </div>
             </div>
-            <div class="col-md-4">
-                <div class="content-section">
-                    <h3>Our Sidebar</h3>
+            <div class="col-lg-4">
+                <div class="content-section p-4 bg-light shadow rounded border border-light">
+                    <h3 class="border-bottom pb-2 mb-3">Our Sidebar</h3>
                     <p class="text-muted">
                         You can put any information here you'd like.
                     </p>
                     <ul class="list-group">
-                        <li class="list-group-item list-group-item-light">Latest Posts</li>
-                        <li class="list-group-item list-group-item-light">Announcements</li>
-                        <li class="list-group-item list-group-item-light">Calendars</li>
-                        <li class="list-group-item list-group-item-light">etc</li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-action">
+                            Latest Posts
+                            <span class="badge bg-primary rounded-pill">12</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-action">
+                            Announcements
+                            <span class="badge bg-primary rounded-pill">5</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-action">
+                            Calendars
+                            <span class="badge bg-primary rounded-pill">3</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-action">
+                            etc
+                            <span class="badge bg-primary rounded-pill">7</span>
+                        </li>
                     </ul>
                 </div>
             </div>
         </div>
     </main>
+    
+    
+    
 
     <footer>
         <div class="container-fluid">
