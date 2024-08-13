@@ -30,3 +30,4 @@ def login(request):
 def register(request):
     return render(request, 'blog/register.html', {'title': 'Register'})
 
+

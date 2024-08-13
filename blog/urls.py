@@ -12,4 +12,5 @@ urlpatterns = [
     path('privacy/', views.privacy, name='blog-privacy'),
     path('login/', views.login, name='blog-login'),
     path('register/', views.register, name='blog-register'),
+    
 ]
