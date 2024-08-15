@@ -1,0 +1,6 @@
+/* Create a new file like static/css/tailwind.css */
+
+/* tailwind.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

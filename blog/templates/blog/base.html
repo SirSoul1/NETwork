@@ -8,47 +8,14 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
+    <!-- tailwind CSS -->
+    <link href= "https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- link to js file -->
+    <script src="../../static/main.js"></script>
+
+
     <!-- Custom CSS -->
-    <style>
-        html, body {
-            height: 100%; /* Ensure full height for the page */
-            margin: 0; /* Remove default margin */
-            background-color: whitesmoke; /* Background color */
-            display: flex;
-            flex-direction: column;
-            padding-top: 10px;
-        }
-
-        .container-flex {
-            flex: 1; /* Make content take up all available space */
-        }
-
-        footer {
-            background-color: #343a40; /* Dark background */
-            color: white; /* White text */
-            padding: 10px 0; /* Padding for the footer */
-            position: fixed;
-            width: 100%;
-            bottom: 0; /* Stick the footer to the bottom */
-        }
-
-        .navbar-custom {
-            background-color: #343a40; /* Ensures navbar is consistent with footer */
-            margin-bottom: 20px; /* Adds some space below the navbar */
-        }
-
-        .input-group .form-control {
-            border-right: 0; /* Smoothens the input group appearance */
-        }
-
-        .input-group .input-group-append .btn {
-            border-left: 0; /* Aligns button seamlessly with input */
-        }
-
-        .footer a {
-            color: #ffffff; /* Ensures links are also white */
-        }
-    </style>
+    
 
     {% block title %}
         <title>NET Blog</title>
@@ -56,36 +23,41 @@
 </head>
 <body>
     <header class="site-header">
-        <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <div class="container-fluid">
-                <a class="navbar-brand mr-4" href="{% url 'blog-home' %}">Simply Social</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+        <nav class="bg-gray-900 py-4">
+            <div class="container mx-auto px-4 flex items-center justify-between">
+                <a class="text-3xl font-bold text-white tracking-wide hover:text-gray-300 transition duration-300" href="{% url 'blog-home' %}">Simply Social</a>
+                <span class="text-sm text-gray-300 ml-2">Social Media Simplified</span>
+                
+                <!-- Menu button for small screens -->
+                <button id="menu-button" class="text-white md:hidden focus:outline-none transform transition-transform duration-300" type="button" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                    <svg id="menu-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarToggle">
-                    <div class="navbar-nav mr-auto">
-                        <a class="nav-item nav-link" href="{% url 'blog-home' %}">Home</a>
-                        <a class="nav-item nav-link" href="{% url 'blog-about' %}">About</a>
-                        <a class="nav-item nav-link" href="{% url 'blog-contact' %}">Contact</a>
-                    </div>
-                    <!-- Navbar Right Side -->
-                    <div class="navbar-nav">
-                        {% if user.is_authenticated %}
-                        <a class="nav-item nav-link" href="{% url 'post-create' %}">New Post</a>
-                            <a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>
-                            <form action="{% url 'logout' %}" method="post" style="display:inline;">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-link nav-item nav-link" style="display:inline;">Logout</button>
-                            </form>
-                        {% else %}
-                            <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
-                            <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
-                        {% endif %}
-                    </div>
+
+                
+                <!-- Navigation links -->
+                <div id="navbarToggle" class="hidden md:flex md:items-center space-x-6">
+                    <a class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300" href="{% url 'blog-home' %}">Home</a>
+                    <a class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300" href="{% url 'blog-about' %}">About</a>
+                    <a class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300" href="{% url 'blog-contact' %}">Contact</a>
+                    {% if user.is_authenticated %}
+                        <a class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300" href="{% url 'post-create' %}">New Post</a>
+                        <a class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300" href="{% url 'profile' %}">Profile</a>
+                        <form action="{% url 'logout' %}" method="post" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300 focus:outline-none">Logout</button>
+                        </form>
+                    {% else %}
+                        <a class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300" href="{% url 'login' %}">Login</a>
+                        <a class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300" href="{% url 'register' %}">Register</a>
+                    {% endif %}
                 </div>
             </div>
         </nav>
     </header>
+    
+    
 
     <main role="main" class="container mt-5">
         <div class="row mb-2">
