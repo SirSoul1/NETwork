@@ -27,18 +27,22 @@ class PostDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['comments'] = self.object.comments.all()
+        context['comments'] = self.object.comments.filter(parent__isnull=True)
         context['comment_form'] = CommentForm
         return context
     
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        content = request.POST.get('content')
-        if content:
-            comment = Comment(post=self.object, author=request.user, content=content) 
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = self.object
+            comment.author = request.user
             comment.save()
-            return redirect('post-detail', pk=self.object.pk)         
-        return self.get(request, *args, **kwargs)
+            return redirect('post-detail', pk=self.object.pk)
+        context = self.get_context_data(object=self.object)
+        context['comment_form'] = form
+        return self.render_to_response(context)
 
 class PostCreateView(LoginRequiredMixin,CreateView,UserPassesTestMixin):
     model = Post

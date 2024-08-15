@@ -12,4 +12,8 @@ class CommentForm(forms.ModelForm):
 
     class Meta:
         model = Comment
-        fields = ['content']
+        fields = ['content','parent']
+        widgets = {
+            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Write a reply...'}),
+            'parent': forms.HiddenInput
+        }

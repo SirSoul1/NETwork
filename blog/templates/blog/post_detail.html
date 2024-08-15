@@ -33,16 +33,25 @@
             <div class="content-section">
                 <h3>Comments</h3>
                 {% for comment in comments %}
-                    <div class="d-flex mb-4">
-                        <div class="me-3">
-                            <img class="rounded-circle" src="{{ comment.author.profile.image.url }}" 
-                                 alt="Profile picture of {{ comment.author }}"
-                                 style="width: 50px; height: 50px; object-fit: cover;">
-                        </div>
-                        <div>
-                            <h5 class="mt-0 mb-1">{{ comment.author }}</h5>
-                            <p class="mb-1">{{ comment.content }}</p>
+                    <div class="media mb-4">
+                        <img class="rounded-circle article-img" src="{{ comment.author.profile.image.url }}" alt="Profile picture of {{ comment.author }}" style="width: 50px; height: 50px; object-fit: cover;">
+                        <div class="media-body">
+                            <h5 class="mt-0"><a href="{% url 'profile-view' comment.author.username %}">{{ comment.author }}</a></h5>
+                            <p>{{ comment.content }}</p>
                             <small class="text-muted">{{ comment.date_posted|date:"F d, Y H:i" }}</small>
+                            <a href="#" class="reply-link" data-comment-id="{{ comment.id }}">Reply</a>
+
+                            <!-- Nested Replies -->
+                            {% for reply in comment.replies.all %}
+                                <div class="media mt-4">
+                                    <img class="rounded-circle article-img" src="{{ reply.author.profile.image.url }}" alt="Profile picture of {{ reply.author }}" style="width: 40px; height: 40px; object-fit: cover;">
+                                    <div class="media-body">
+                                        <h6 class="mt-0">{{ reply.author }}</h6>
+                                        <p>{{ reply.content }}</p>
+                                        <small class="text-muted">{{ reply.date_posted|date:"F d, Y H:i" }}</small>
+                                    </div>
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
                 {% empty %}
@@ -55,10 +64,7 @@
                     <h3>Leave a Comment</h3>
                     <form method="POST">
                         {% csrf_token %}
-                        <div class="form-group">
-                            <label for="comment">Comment:</label>
-                            <textarea class="form-control" id="comment" name="content" rows="3"></textarea>
-                        </div>
+                        {{ comment_form.as_p }}
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>        
                 </div>
@@ -68,4 +74,17 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Simple JavaScript to set the parent ID in the reply form
+    document.querySelectorAll('.reply-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const commentId = this.getAttribute('data-comment-id');
+            document.querySelector('#id_parent').value = commentId;
+            window.scrollTo(0, document.body.scrollHeight);  // Scroll to form
+        });
+    });
+</script>
+
 {% endblock content %}

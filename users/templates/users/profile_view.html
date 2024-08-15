@@ -1,0 +1,35 @@
+<!-- users/templates/users/profile_view.html -->
+
+{% extends "blog/base.html" %}
+{% load static %}  <!-- Add this line at the top -->
+
+{% block content %}
+<div class="container my-4">
+    <div class="row">
+        <div class="col-md-4">
+            {% if profile_user.profile.image %}
+                <img src="{{ profile_user.profile.image.url }}" 
+                     class="img-fluid rounded-circle" 
+                     style="width: 150px; height: 150px; object-fit: cover;"
+                     alt="Profile picture of {{ profile_user.username }}">
+            {% else %}
+                <img src="{% static 'default.jpg' %}" 
+                     class="img-fluid rounded-circle" 
+                     style="width: 150px; height: 150px; object-fit: cover;"
+                     alt="Default profile picture">
+            {% endif %}
+        </div>
+        <div class="col-md-8">
+            <h3>{{ profile_user.username }}</h3>
+            <p>{{ profile_user.email }}</p>
+            <hr>
+            <h5>Profile Info</h5>
+            <p>{{ profile_user.profile.bio }}</p> 
+            <!-- Edit Profile button if the logged in user is viewing their own profile -->
+             {% if profile_user == user %}
+                <a class="btn btn-primary" href="{% url 'profile' %}">Edit Profile</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}
