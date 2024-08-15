@@ -11,9 +11,7 @@
                             alt="Profile picture of {{ object.author }}">
                 </div>
                 <div class="flex-grow-1">
-                    <h4 class="mb-2">
-                        {{ object.title }}
-                    </h4>
+                    <h4 class="mb-2">{{ object.title }}</h4>
                     <p class="text-muted mb-1">
                         <small>{{ object.author }} - {{ object.date_posted|date:"D d M Y" }}</small>
                     {% if object.author == user %}
@@ -26,6 +24,47 @@
                     <p class="mb-0">{{ object.content }}</p>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Comments Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="content-section">
+                <h3>Comments</h3>
+                {% for comment in comments %}
+                    <div class="d-flex mb-4">
+                        <div class="me-3">
+                            <img class="rounded-circle" src="{{ comment.author.profile.image.url }}" 
+                                 alt="Profile picture of {{ comment.author }}"
+                                 style="width: 50px; height: 50px; object-fit: cover;">
+                        </div>
+                        <div>
+                            <h5 class="mt-0 mb-1">{{ comment.author }}</h5>
+                            <p class="mb-1">{{ comment.content }}</p>
+                            <small class="text-muted">{{ comment.date_posted|date:"F d, Y H:i" }}</small>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>No comments yet. Be the first to comment!</p>
+                {% endfor %}
+            </div>
+
+            {% if user.is_authenticated %}
+                <div class="content-section">
+                    <h3>Leave a Comment</h3>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="comment">Comment:</label>
+                            <textarea class="form-control" id="comment" name="content" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>        
+                </div>
+            {% else %}
+                <p>You must be <a href="{% url 'login' %}">logged in</a> to leave a comment.</p>
+            {% endif %}
         </div>
     </div>
 </div>

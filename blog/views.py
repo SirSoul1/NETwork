@@ -1,6 +1,9 @@
-from django.shortcuts import render
+
+from django.shortcuts import redirect, render
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Post
+from .forms import CommentForm
+
+from .models import Post, Comment
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 def post_detail(request, pk):
@@ -21,6 +24,21 @@ class PostListView(ListView):
     
 class PostDetailView(DetailView):
     model = Post
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['comments'] = self.object.comments.all()
+        context['comment_form'] = CommentForm
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        content = request.POST.get('content')
+        if content:
+            comment = Comment(post=self.object, author=request.user, content=content) 
+            comment.save()
+            return redirect('post-detail', pk=self.object.pk)         
+        return self.get(request, *args, **kwargs)
 
 class PostCreateView(LoginRequiredMixin,CreateView,UserPassesTestMixin):
     model = Post
