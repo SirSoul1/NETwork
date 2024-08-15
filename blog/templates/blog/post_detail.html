@@ -13,7 +13,7 @@
                 <div class="flex-grow-1">
                     <h4 class="mb-2">{{ object.title }}</h4>
                     <p class="text-muted mb-1">
-                        <small>{{ object.author }} - {{ object.date_posted|date:"D d M Y" }}</small>
+                        <small><a href="{% url 'profile-view' object.author.username %}">{{ object.author }} </a> - {{ object.date_posted|date:"D d M Y" }}</small>
                     {% if object.author == user %}
                         <div>
                             <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.id %}"> Update</a>
@@ -46,7 +46,7 @@
                                 <div class="media mt-4">
                                     <img class="rounded-circle article-img" src="{{ reply.author.profile.image.url }}" alt="Profile picture of {{ reply.author }}" style="width: 40px; height: 40px; object-fit: cover;">
                                     <div class="media-body">
-                                        <h6 class="mt-0">{{ reply.author }}</h6>
+                                        <h6 class="mt-0"><a href="{% url 'profile-view' reply.author.username %}">{{ reply.author }}</a></h6>
                                         <p>{{ reply.content }}</p>
                                         <small class="text-muted">{{ reply.date_posted|date:"F d, Y H:i" }}</small>
                                     </div>
