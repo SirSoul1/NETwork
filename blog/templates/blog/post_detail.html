@@ -13,7 +13,7 @@
                 <div class="flex-grow-1">
                     <h4 class="mb-2">{{ object.title }}</h4>
                     <p class="text-muted mb-1">
-                        <small><a href="{% url 'profile-view' object.author.username %}">{{ object.author }} </a> - {{ object.date_posted|date:"D d M Y" }}</small>
+                        <small><a href="{% url 'user-posts' object.author.username %}">{{ object.author }} </a> - {{ object.date_posted|date:"D d M Y" }}</small>
                     {% if object.author == user %}
                         <div>
                             <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.id %}"> Update</a>
