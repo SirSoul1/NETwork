@@ -8,114 +8,117 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    <!-- tailwind CSS -->
-    <link href= "https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <!-- link to js file -->
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+    <!-- Custom JavaScript -->
     <script src="../../static/main.js"></script>
-
-
-    <!-- Custom CSS -->
-    
 
     {% block title %}
         <title>NET Blog</title>
     {% endblock %}
 </head>
-<body>
-    <header class="site-header">
-        <nav class="bg-gray-900 py-4">
-            <div class="container mx-auto px-4 flex items-center justify-between">
+<body class="flex flex-col min-h-screen">
+
+    <!-- Header -->
+<header class="site-header">
+    <nav class="bg-gray-900 py-4">
+        <div class="container mx-auto px-4 flex items-center justify-between">
+            <!-- Logo and Motto Grouped Together -->
+            <div class="flex items-center">
                 <a class="text-3xl font-bold text-white tracking-wide hover:text-gray-300 transition duration-300" href="{% url 'blog-home' %}">Simply Social</a>
-                <span class="text-sm text-gray-300 ml-2">Social Media Simplified</span>
-                
-                <!-- Menu button for small screens -->
-                <button id="menu-button" class="text-white md:hidden focus:outline-none transform transition-transform duration-300" type="button" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
-                    <svg id="menu-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
-
-                
-                <!-- Navigation links -->
-                <div id="navbarToggle" class="hidden md:flex md:items-center space-x-6">
-                    <a class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300" href="{% url 'blog-home' %}">Home</a>
-                    <a class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300" href="{% url 'blog-about' %}">About</a>
-                    <a class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300" href="{% url 'blog-contact' %}">Contact</a>
-                    {% if user.is_authenticated %}
-                        <a class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300" href="{% url 'post-create' %}">New Post</a>
-                        <a class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300" href="{% url 'profile' %}">Profile</a>
-                        <form action="{% url 'logout' %}" method="post" class="inline">
-                            {% csrf_token %}
-                            <button type="submit" class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300 focus:outline-none">Logout</button>
-                        </form>
-                    {% else %}
-                        <a class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300" href="{% url 'login' %}">Login</a>
-                        <a class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300" href="{% url 'register' %}">Register</a>
-                    {% endif %}
-                </div>
+                <span class="text-sm text-gray-300 ml-2 italic">Social Media Simplified</span>
             </div>
-        </nav>
-    </header>
-    
-    
+            
+            <!-- Menu button for small screens -->
+            <button id="menu-button" class="text-white md:hidden focus:outline-none transform transition-transform duration-300" type="button" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                <svg id="menu-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
 
-    <main role="main" class="container mt-5">
-        <div class="row mb-2">
-            <div class="col-md-8">
-                <div class="bg-white p-4 shadow rounded border border-light">
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }}">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                    {% block content %}{% endblock %}
-                    
-                </div>
+            <!-- Navigation links -->
+            <div id="navbarToggle" class="hidden md:flex md:items-center space-x-6">
+                <a class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300" href="{% url 'blog-home' %}">Home</a>
+                <a class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300" href="{% url 'blog-about' %}">About</a>
+                <a class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300" href="{% url 'blog-contact' %}">Contact</a>
+                {% if user.is_authenticated %}
+                    <a class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300" href="{% url 'post-create' %}">New Post</a>
+                    <a class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300" href="{% url 'profile' %}">Profile</a>
+                    <form action="{% url 'logout' %}" method="post" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300 focus:outline-none">Logout</button>
+                    </form>
+                {% else %}
+                    <a class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300" href="{% url 'login' %}">Login</a>
+                    <a class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300" href="{% url 'register' %}">Register</a>
+                {% endif %}
             </div>
-            {% if user.is_authenticated %}
-                <div class="col-lg-4">
-                    <div class="content-section p-4 bg-light shadow rounded border border-light"></div>
-                        <h3 class="border-bottom pb-2 mb-3">Our Sidebar</h3>
-                        <p class="text-muted"></p>
-                            You can put any information here you'd like.
-                        </p>
-                        <ul class="list-group"></ul>
-                            <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-action">
-                                Latest Posts
-                                <span class="badge bg-primary rounded-pill">12</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-action">
-                                Announcements
-                                <span class="badge bg-primary rounded-pill">5</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-action">
-                                Calendars
-                                <span class="badge bg-primary rounded-pill">3</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-action">
-                                etc
-                                <span class="badge bg-primary rounded-pill">7</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            {% endif %}
         </div>
-    </main>
-    
-    
-    
+    </nav>
+</header>
 
-    <footer>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-8">
+
+    <!-- Main content -->
+<main role="main" class="flex-grow container mt-5">
+    <div class="row mb-8">
+        <!-- Main Posts Section -->
+        <div class="col-md-8">
+            <div class="bg-white p-6 shadow-md rounded-lg border border-gray-200">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} mb-4">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <div class="space-y-6">
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Section -->
+        {% if user.is_authenticated %}
+        <div class="col-lg-4 mt-6 md:mt-0">
+            <div class="bg-gray-800 text-white p-6 shadow-md rounded-lg">
+                <h3 class="text-xl font-semibold mb-4">Our Sidebar</h3>
+                <p class="text-gray-300 mb-4">You can put any information here you'd like.</p>
+                <ul class="list-group list-none space-y-3">
+                    <li class="flex justify-between items-center p-3 bg-gray-700 rounded-lg hover:bg-gray-600 transition">
+                        <span>Latest Posts</span>
+                        <span class="bg-primary-500 text-white px-3 py-1 rounded-full">12</span>
+                    </li>
+                    <li class="flex justify-between items-center p-3 bg-gray-700 rounded-lg hover:bg-gray-600 transition">
+                        <span>Announcements</span>
+                        <span class="bg-primary-500 text-white px-3 py-1 rounded-full">5</span>
+                    </li>
+                    <li class="flex justify-between items-center p-3 bg-gray-700 rounded-lg hover:bg-gray-600 transition">
+                        <span>Calendars</span>
+                        <span class="bg-primary-500 text-white px-3 py-1 rounded-full">3</span>
+                    </li>
+                    <li class="flex justify-between items-center p-3 bg-gray-700 rounded-lg hover:bg-gray-600 transition">
+                        <span>etc</span>
+                        <span class="bg-primary-500 text-white px-3 py-1 rounded-full">7</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</main>
+
+
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 py-6 mt-auto">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="text-gray-400 text-sm">
                     <p>&copy; 2024 Simply Social - All rights reserved</p>
                 </div>
-                <div class="col-md-4 text-right">
-                    <a href="{% url 'blog-privacy' %}">Privacy Policy</a>
+                <div class="mt-4 md:mt-0">
+                    <a href="{% url 'blog-privacy' %}" class="text-gray-400 text-sm hover:text-gray-200 transition duration-300">Privacy Policy</a>
                 </div>
             </div>
         </div>
