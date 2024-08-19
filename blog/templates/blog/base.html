@@ -12,7 +12,13 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
     <!-- Custom JavaScript -->
-    <script src="../../static/main.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+
+
+    <!-- CDN for Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+
 
     {% block title %}
         <title>NET Blog</title>
@@ -29,6 +35,13 @@
                 <a class="text-3xl font-bold text-white tracking-wide hover:text-gray-300 transition duration-300" href="{% url 'blog-home' %}">Simply Social</a>
                 <span class="text-sm text-gray-300 ml-2 italic">Social Media Simplified</span>
             </div>
+
+            <main role="main" class="flex-grow container mt-5">
+                <div id="root" class="row mb-8">
+                    <!-- React component will be rendered here -->
+                </div>
+            </main>
+            
             
             <!-- Menu button for small screens -->
             <button id="menu-button" class="text-white md:hidden focus:outline-none transform transition-transform duration-300" type="button" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
@@ -124,9 +137,21 @@
         </div>
     </footer>
 
-    <!-- Optional JavaScript -->
+    <!--Optional JavaScript -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <!-- React -->
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <!-- <script type="text/babel" src="{% static 'js/App.js' %}"></script> -->
+    
+    <script src="{% static 'dist/bundle.js' %}"></script>
+
+    
+    
+    
+
 </body>
 </html>
