@@ -15,6 +15,10 @@
     <script src="{% static 'js/main.js' %}"></script>
 
 
+    <!-- linking to stylesheet for animations -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+
+
     <!-- CDN for Babel -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
@@ -77,7 +81,7 @@
     <div class="row mb-8">
         <!-- Main Posts Section -->
         <div class="col-md-8">
-            <div class="bg-white p-6 shadow-md rounded-lg border border-gray-200">
+            <div class="bg-gray-900 text-white p-6 shadow-md rounded-lg border border-gray-900">
                 {% if messages %}
                     {% for message in messages %}
                         <div class="alert alert-{{ message.tags }} mb-4">

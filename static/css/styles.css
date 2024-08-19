@@ -1,0 +1,16 @@
+/* styles.css */
+body {
+    transition: filter 0.5s ease-in-out;
+
+}
+  
+  body.inverted {
+    filter: invert(1) hue-rotate(180deg);
+  }
+
+/* More specific selector */
+div .header {
+    animation: slideInDown 1s ease-out;
+}
+
+  
