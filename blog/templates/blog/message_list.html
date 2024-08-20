@@ -2,31 +2,91 @@
 
 {% block content %}
   <div class="container">
-    <h2>Your Messages</h2>
-    <br>
+    <h2>Messages</h2>
+
+    <!-- Message Form -->
+    <h3>Send a Message</h3>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-primary">Send Message</button>
+    </form>
+
+    <!-- Received Messages -->
     <h3>Received Messages</h3>
     <ul class="list-group">
-    {% for message in received_messages %}
+      {% for message in received_messages %}
         <li class="list-group-item">
-        <strong class="text-blue-500">{{ message.sender.username }}:</strong> <span class="text-gray-700">{{ message.decrypted_content }}</span>
-        <span class="float-right text-muted">{{ message.timestamp }}</span>
-        </li>
-    {% empty %}
-        <li class="list-group-item text-gray-700">No messages received.</li>
-    {% endfor %}
-    </ul>
-
-
-    <h3 class="mt-4">Sent Messages</h3>
-    <ul class="list-group">
-      {% for message in sent_messages %}
-        <li class="list-group-item">
-          <strong class="text-blue-500">To {{ message.receiver.username }}:</strong> <span class="text-gray-700"> {{ message.decrypted_content }} </span>
+          <strong class="text-blue-500">{{ message.sender.username }}:</strong> <span class="text-gray-700">{{ message.decrypted_content }}</span>
           <span class="float-right text-muted">{{ message.timestamp }}</span>
         </li>
       {% empty %}
-        <li class="list-group-item text-blue-500">No messages sent.</li>
+        <li class="list-group-item text-gray-700">No messages received.</li>
       {% endfor %}
     </ul>
+
+    <!-- Received Messages Pagination -->
+    {% if received_page_obj.has_other_pages %}
+        <div class="flex justify-center mt-6">
+            <nav class="flex space-x-2">
+                {% if received_page_obj.has_previous %}
+                    <a class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" href="?received_page=1">First</a>
+                    <a class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" href="?received_page={{ received_page_obj.previous_page_number }}">Previous</a>
+                {% endif %}
+
+                {% for num in received_page_obj.paginator.page_range %}
+                    {% if received_page_obj.number == num %}
+                        <span class="px-4 py-2 bg-blue-600 text-white rounded">{{ num }}</span>
+                    {% elif num > received_page_obj.number|add:"-3" and num < received_page_obj.number|add:"3" %}
+                        <a class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" href="?received_page={{ num }}">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if received_page_obj.has_next %}
+                    <a class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" href="?received_page={{ received_page_obj.next_page_number }}">Next</a>
+                    <a class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" href="?received_page={{ received_page_obj.paginator.num_pages }}">Last</a>
+                {% endif %}
+            </nav>
+        </div>
+    {% endif %}
+
+    <!-- Sent Messages -->
+    <h3>Sent Messages</h3>
+    <ul class="list-group">
+      {% for message in sent_messages %}
+        <li class="list-group-item">
+          <strong class="text-blue-500">{{ message.receiver.username }}:</strong> <span class="text-gray-700">{{ message.decrypted_content }}</span>
+          <span class="float-right text-muted">{{ message.timestamp }}</span>
+        </li>
+      {% empty %}
+        <li class="list-group-item text-gray-700">No messages sent.</li>
+      {% endfor %}
+    </ul>
+
+    <!-- Sent Messages Pagination -->
+    {% if sent_page_obj.has_other_pages %}
+        <div class="flex justify-center mt-6">
+            <nav class="flex space-x-2">
+                {% if sent_page_obj.has_previous %}
+                    <a class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" href="?sent_page=1">First</a>
+                    <a class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" href="?sent_page={{ sent_page_obj.previous_page_number }}">Previous</a>
+                {% endif %}
+
+                {% for num in sent_page_obj.paginator.page_range %}
+                    {% if sent_page_obj.number == num %}
+                        <span class="px-4 py-2 bg-blue-600 text-white rounded">{{ num }}</span>
+                    {% elif num > sent_page_obj.number|add:"-3" and num < sent_page_obj.number|add:"3" %}
+                        <a class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" href="?sent_page={{ num }}">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if sent_page_obj.has_next %}
+                    <a class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" href="?sent_page={{ sent_page_obj.next_page_number }}">Next</a>
+                    <a class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" href="?sent_page={{ sent_page_obj.paginator.num_pages }}">Last</a>
+                {% endif %}
+            </nav>
+        </div>
+    {% endif %}
+
   </div>
 {% endblock %}

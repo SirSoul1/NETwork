@@ -6,13 +6,14 @@ from django.db.models.query import QuerySet
 from django.shortcuts import redirect, render
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .forms import CommentForm
+from django.core.paginator import Paginator
 
 from django.contrib.auth.decorators import login_required
 from .models import Message
 from .forms import MessageForm
 from cryptography.fernet import Fernet
 from cryptography.fernet import InvalidToken
-
+from django.contrib import messages as django_messages
 from .models import Post, Comment
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
@@ -116,8 +117,19 @@ def message_form(request):
 
 @login_required
 def message_list(request):
-    received_messages = Message.objects.filter(receiver=request.user)
-    sent_messages = Message.objects.filter(sender=request.user)
+    if request.method == 'POST':
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.sender = request.user
+            message.save()
+            django_messages.success(request, "Message sent successfully!")
+            return redirect('message-list')  # Redirect to avoid resubmission of form
+    else:
+        form = MessageForm()
+
+    received_messages = Message.objects.filter(receiver=request.user).order_by('-timestamp')
+    sent_messages = Message.objects.filter(sender=request.user).order_by('-timestamp')
 
     # Pre-decrypt messages
     for message in received_messages:
@@ -125,9 +137,23 @@ def message_list(request):
     for message in sent_messages:
         message.decrypted_content = decrypt_message_content(message, request.user)
 
+
+    # Pagination for received messages
+    received_paginator = Paginator(received_messages, 4)  # Show 4 messages per page
+    received_page_number = request.GET.get('received_page')
+    received_page_obj = received_paginator.get_page(received_page_number)
+
+    # Pagination for sent messages
+    sent_paginator = Paginator(sent_messages, 4)  # Show 5 messages per page
+    sent_page_number = request.GET.get('sent_page')
+    sent_page_obj = sent_paginator.get_page(sent_page_number)
+
     return render(request, 'blog/message_list.html', {
-        'received_messages': received_messages,
-        'sent_messages': sent_messages
+        'form': form,
+        'received_messages': received_page_obj,
+        'sent_messages': sent_page_obj,
+        'received_page_obj': received_page_obj,
+        'sent_page_obj': sent_page_obj,
     })
 
 
