@@ -1,0 +1,32 @@
+{% extends "blog/base.html" %}
+
+{% block content %}
+  <div class="container">
+    <h2>Your Messages</h2>
+    <br>
+    <h3>Received Messages</h3>
+    <ul class="list-group">
+    {% for message in received_messages %}
+        <li class="list-group-item">
+        <strong class="text-blue-500">{{ message.sender.username }}:</strong> <span class="text-gray-700">{{ message.decrypted_content }}</span>
+        <span class="float-right text-muted">{{ message.timestamp }}</span>
+        </li>
+    {% empty %}
+        <li class="list-group-item text-gray-700">No messages received.</li>
+    {% endfor %}
+    </ul>
+
+
+    <h3 class="mt-4">Sent Messages</h3>
+    <ul class="list-group">
+      {% for message in sent_messages %}
+        <li class="list-group-item">
+          <strong class="text-blue-500">To {{ message.receiver.username }}:</strong> <span class="text-gray-700"> {{ message.decrypted_content }} </span>
+          <span class="float-right text-muted">{{ message.timestamp }}</span>
+        </li>
+      {% empty %}
+        <li class="list-group-item text-blue-500">No messages sent.</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}

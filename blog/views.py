@@ -7,6 +7,12 @@ from django.shortcuts import redirect, render
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .forms import CommentForm
 
+from django.contrib.auth.decorators import login_required
+from .models import Message
+from .forms import MessageForm
+from cryptography.fernet import Fernet
+from cryptography.fernet import InvalidToken
+
 from .models import Post, Comment
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
@@ -93,6 +99,48 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.request.user == post.author:
             return True
         return False
+    
+
+@login_required
+def message_form(request):
+    if request.method == 'POST':
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.sender = request.user
+            message.save()
+            return redirect('home')
+    else:
+        form = MessageForm()
+    return render(request, 'blog/message_form.html', {'form': form})
+
+@login_required
+def message_list(request):
+    received_messages = Message.objects.filter(receiver=request.user)
+    sent_messages = Message.objects.filter(sender=request.user)
+
+    # Pre-decrypt messages
+    for message in received_messages:
+        message.decrypted_content = decrypt_message_content(message, request.user)
+    for message in sent_messages:
+        message.decrypted_content = decrypt_message_content(message, request.user)
+
+    return render(request, 'blog/message_list.html', {
+        'received_messages': received_messages,
+        'sent_messages': sent_messages
+    })
+
+
+def decrypt_message_content(message, user):
+    try:
+        cipher_suite = Fernet(message.key.encode('utf-8'))
+        decrypted_content = cipher_suite.decrypt(message.content.encode('utf-8')).decode('utf-8')
+        return decrypted_content
+    except InvalidToken:
+        return "Decryption failed: Invalid token."
+    except Exception as e:
+        return f"Decryption error: {str(e)}"
+
 
 
 def about(request):
