@@ -19,7 +19,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Q
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.models import User
+from .forms import PostForm
 
 
 def post_detail(request, pk):
@@ -75,7 +77,7 @@ class PostDetailView(DetailView):
 
 class PostCreateView(LoginRequiredMixin,CreateView,UserPassesTestMixin):
     model = Post
-    fields = ['title', 'content']
+    form_class = PostForm
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -85,7 +87,7 @@ class PostCreateView(LoginRequiredMixin,CreateView,UserPassesTestMixin):
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin,UpdateView):
     model = Post
-    fields = ['title', 'content']
+    form_class = PostForm
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -189,6 +191,30 @@ def mark_messages_as_read(request):
     return JsonResponse({"status": "error"}, status=400)
 
 
+def search(request):
+    query = request.GET.get('q')
+
+    if query:
+        try:
+            # Check if there's a user with the given username
+            user = User.objects.get(username=query)
+            # Redirect to the user's profile view
+            return redirect('profile-view', username=user.username)
+        except User.DoesNotExist:
+            # If no user is found, you can either redirect to an empty search result page or show a message
+            return render(request, 'blog/search_results.html', {'query': query, 'results': None})
+    
+    # If no query is provided, just render the search results with no results
+    return render(request, 'blog/search_results.html', {'query': query, 'results': None})
+
+def profile_view(request, username):
+    profile_user = get_object_or_404(User, username=username)
+    return render(request, 'users/profile_view.html', {'profile_user': profile_user})
+
+
+
+
+
 
 def about(request):
     return render(request, 'blog/about.html', {'title': 'About'})
@@ -196,8 +222,8 @@ def about(request):
 def contact(request):
     return render(request, 'blog/contact.html', {'title': 'Contact'})
 
-def search(request):
-    return render(request, 'blog/search.html', {'title': 'Search'})
+# def search(request):
+#     return render(request, 'blog/search.html', {'title': 'Search'})
 
 def privacy(request):
     return render(request, 'blog/privacy.html', {'title': 'Privacy'})

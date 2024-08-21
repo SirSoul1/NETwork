@@ -44,6 +44,19 @@
                 <span class="text-sm text-gray-300 ml-2 italic animate-zoom-in">Social Media Simplified</span>
             </div>
 
+            <!-- Search Bar -->
+            <form action="{% url 'search' %}" method="GET" class="flex items-center mx-auto md:w-1/3">
+                <input 
+                    type="text" 
+                    name="q" 
+                    placeholder="Search users..." 
+                    class="bg-gray-800 text-white rounded-l-lg p-2 w-full focus:outline-none focus:bg-gray-700"
+                    required>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white rounded-r-lg p-2">
+                    Search
+                </button>
+            </form>
+
             <!-- <main role="main" class="flex-grow container mt-5">
                 <div id="root" class="row mb-8"> -->
                     <!-- React component will be rendered here -->

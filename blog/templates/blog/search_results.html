@@ -1,0 +1,11 @@
+{% extends "blog/base.html" %}
+
+{% block content %}
+<div class="container mx-auto mt-6 text-white">
+    {% if error %}
+        <p class="text-center text-lg">{{ error }}</p>
+    {% else %}
+        <p class="text-center text-lg">Use the search bar to find users.</p>
+    {% endif %}
+</div>
+{% endblock %}

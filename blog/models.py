@@ -5,13 +5,34 @@ from django.urls import reverse
 from cryptography.fernet import Fernet
 import base64
 from cryptography.fernet import InvalidToken
-
+from django.core.validators import FileExtensionValidator
+import re
+from django.core.exceptions import ValidationError
 
 class Post(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
     date_posted = models.DateTimeField(default = timezone.now)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    # Media fields
+    image = models.ImageField(upload_to='post_images/', null=True, blank=True, validators=[FileExtensionValidator(['jpg', 'png', 'gif'])])
+    video = models.FileField(upload_to='post_videos/', null=True, blank=True, validators=[FileExtensionValidator(['mp4'])])
+    youtube_url = models.URLField(null=True, blank=True)
+
+    def clean(self):
+        if self.youtube_url:
+            youtube_regex = (
+                r'^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$')
+            if not re.match(youtube_regex, self.youtube_url):
+                raise ValidationError('Enter a valid YouTube URL')
+            
+    
+    def get_youtube_embed_url(self):
+        if self.youtube_url:
+            video_id = self.youtube_url.split('v=')[-1].split('&')[0]
+            return f'https://www.youtube.com/embed/{video_id}'
+        return None
 
     def __str__(self):
         return self.title

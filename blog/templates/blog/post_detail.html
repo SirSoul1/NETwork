@@ -1,31 +1,55 @@
 {% extends "blog/base.html" %}
 {% block content %}
-<div class="container my-4">
-    <div class="row">
-        <div class="col-12 mb-4">
-            <div class="d-flex align-items-right p-3 border rounded bg-white shadow-sm">
-                <div class="me-4">
-                    <img src="{{ object.author.profile.image.url }}" 
-                            class="img-fluid rounded-circle" 
-                            style="width: 60px; height: 60px; object-fit: cover;" 
-                            alt="Profile picture of {{ object.author }}">
-                </div>
-                <div class="flex-grow-1">
-                    <h4 class="text-gray-700 mb-2">{{ object.title }}</h4>
-                    <p class="text-muted mb-1">
-                        <small><a href="{% url 'user-posts' object.author.username %}">{{ object.author }} </a> - {{ object.date_posted|date:"D d M Y" }}</small>
-                    {% if object.author == user %}
-                        <div>
-                            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.id %}"> Update</a>
-                            <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-delete' object.id %}"> Delete</a>
-                        </div>
-                    {% endif %}   
-                    </p>
-                    <p class="text-gray-700 mb-0">{{ object.content }}</p>
-                </div>
+<div class="container mx-auto my-8 px-4">
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <!-- Post Author and Date -->
+            <div class="flex items-center mb-4">
+                <img src="{{ object.author.profile.image.url }}" 
+                        class="w-12 h-12 rounded-full object-cover" 
+                        alt="Profile picture of {{ object.author }}">
             </div>
-        </div>
+            <div class="flex-grow-1">
+                <h4 class="text-gray-700 mb-2">{{ object.title }}</h4>
+                <p class="text-muted mb-1">
+                    <small><a href="{% url 'user-posts' object.author.username %}">{{ object.author }} </a> - {{ object.date_posted|date:"D d M Y" }}</small>
+                {% if object.author == user %}
+                    <div>
+                        <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.id %}"> Update</a>
+                        <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-delete' object.id %}"> Delete</a>
+                    </div>
+                {% endif %}   
+                </p>
+                <!-- Post Content -->
+                <div class="text-gray-700 mb-4">
+                    <p>{{ object.content }}</p>
+                </div>
+        
+                <!-- Display Image -->
+                {% if post.image %}
+                <div class="my-4">
+                    <img src="{{ post.image.url }}" alt="Image for {{ post.title }}" class="w-full max-w-lg mx-auto rounded-lg shadow-md">
+                </div>
+                {% endif %}
+        
+                <!-- Display Video -->
+                {% if post.video %}
+                <div class="my-4">
+                    <video class="w-full max-w-lg mx-auto rounded-lg shadow-md" controls>
+                        <source src="{{ post.video.url }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                {% endif %}
+        
+                <!-- Display YouTube Video -->
+                {% if post.youtube_url %}
+                <div class="my-4">
+                    <iframe class="w-full max-w-lg mx-auto rounded-lg shadow-md" height="315" src="{{ post.get_youtube_embed_url }}" frameborder="0" allowfullscreen></iframe>
+                </div>
+                {% endif %}
+            </div>
     </div>
+    
 
     <!-- Comments Section -->
     <div class="row">
