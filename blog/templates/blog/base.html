@@ -11,8 +11,7 @@
     <!-- Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
-    <!-- Custom JavaScript -->
-    <script src="{% static 'js/main.js' %}"></script>
+    
 
 
     <!-- linking to stylesheet for animations -->
@@ -29,6 +28,11 @@
     {% endblock %}
 </head>
 <body class="flex flex-col min-h-screen">
+    
+
+    
+    <input type="hidden" name="csrfmiddlewaretoken" value="csrf_token"> <!-- CSRF Token -->
+
 
     <!-- Header -->
 <header class="site-header">
@@ -37,7 +41,7 @@
             <!-- Logo and Motto Grouped Together -->
             <div class="flex items-center">
                 <a class="text-3xl font-bold text-white tracking-wide hover:text-gray-300 transition duration-300" href="{% url 'blog-home' %}">Simply Social</a>
-                <span class="text-sm text-gray-300 ml-2 italic">Social Media Simplified</span>
+                <span class="text-sm text-gray-300 ml-2 italic animate-zoom-in">Social Media Simplified</span>
             </div>
 
             <!-- <main role="main" class="flex-grow container mt-5">
@@ -61,7 +65,17 @@
                 <a class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300" href="{% url 'blog-contact' %}">Contact</a>
                 {% if user.is_authenticated %}
                     <a class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300" href="{% url 'post-create' %}">New Post</a>
-                    <a class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300" href="{% url 'message-list' %}">Messages</a>
+                    <a class="relative text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300" href="{% url 'message-list' %}" id="messages-link" data-mark-url="{% url 'mark-messages-as-read' %}">
+                        Messages
+                        {% if has_unread_messages %}
+                        <span class="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 inline-flex">
+                            <span class="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-yellow-500 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-yellow-500"></span>
+                        </span>
+                        {% endif %}                 
+                    </a>
+                    
+
                     <a class="text-lg font-semibold text-gray-200 hover:text-gray-300 transition duration-300" href="{% url 'profile' %}">Profile</a>
                     <form action="{% url 'logout' %}" method="post" class="inline">
                         {% csrf_token %}
@@ -177,6 +191,9 @@
     
     
     
+<!-- Custom JavaScript -->
+<script src="{% static 'js/main.js' %}"></script>
+
 
 </body>
 </html>

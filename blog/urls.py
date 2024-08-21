@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import home, post_detail
 from . import views
-from .views import PostListView, PostDetailView, PostCreateView, PostUpdateView, PostDeleteView, UserPostListView
+from .views import PostListView, PostDetailView, PostCreateView, PostUpdateView, PostDeleteView, UserPostListView, mark_messages_as_read
 
 urlpatterns = [
     path('home/', PostListView.as_view(), name='blog-home'),
@@ -18,6 +18,7 @@ urlpatterns = [
     path('privacy/', views.privacy, name='blog-privacy'),
     path('login/', views.login, name='blog-login'),
     path('register/', views.register, name='blog-register'),
+    path('home/messages/mark-read', mark_messages_as_read, name='mark-messages-as-read'),  
 
     
 ]

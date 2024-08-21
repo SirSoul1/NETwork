@@ -16,6 +16,11 @@ from cryptography.fernet import InvalidToken
 from django.contrib import messages as django_messages
 from .models import Post, Comment
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.db.models import Q
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+
 
 def post_detail(request, pk):
     post = Post.objects.get(pk=pk)
@@ -166,6 +171,22 @@ def decrypt_message_content(message, user):
         return "Decryption failed: Invalid token."
     except Exception as e:
         return f"Decryption error: {str(e)}"
+    
+
+def base_context(request):
+    context = {}
+    if request.user.is_authenticated:
+        context['has_unread_messages'] = Message.objects.filter(receiver=request.user, read=False).exists()
+    return context
+
+
+@csrf_exempt
+@login_required
+def mark_messages_as_read(request):
+    if request.method == 'POST':
+        Message.objects.filter(receiver=request.user, read=False).update(read=True)
+        return JsonResponse({'success': True})
+    return JsonResponse({"status": "error"}, status=400)
 
 
 

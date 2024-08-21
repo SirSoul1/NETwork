@@ -47,7 +47,7 @@ class Message(models.Model):
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
     key = models.CharField(max_length=44, blank=True, null=True)  # Adjusted length to match Fernet key size
-
+    read = models.BooleanField(default=False)
     class Meta:
         ordering = ['-timestamp']
 
