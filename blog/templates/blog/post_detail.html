@@ -19,6 +19,10 @@
                     </div>
                 {% endif %}   
                 </p>
+
+
+
+
                 <!-- Post Content -->
                 <div class="text-gray-700 mb-4">
                     <p>{{ object.content }}</p>
@@ -49,13 +53,22 @@
                 {% endif %}
             </div>
     </div>
-    
+
+
+    <!-- Like Button -->
+    <div class="flex items-center justify-start">
+        <form method="POST" class="like-form inline-flex items-center" data-post-id="{{ object.id }}" data-url="{% url 'like-post' object.id %}">
+            {% csrf_token %}
+            <div class="heart {% if user in object.likes.all %}is-active{% endif %} "></div>
+        </form>
+        <span id="like-count" class="text-gray-600">{{ object.total_likes }} Likes</span>
+    </div>
 
     <!-- Comments Section -->
     <div class="row">
         <div class="col-12">
             <div class="content-section">
-                <h3>Comments</h3>
+                <h3>Comments</h3><br>
                 {% for comment in comments %}
                     <div class="media mb-4">
                         <img class="rounded-circle article-img" src="{{ comment.author.profile.image.url }}" alt="Profile picture of {{ comment.author }}" style="width: 50px; height: 50px; object-fit: cover;">
@@ -100,6 +113,7 @@
 </div>
 
 <script>
+    var csrfToken = '{{ csrf_token }}';
     // Simple JavaScript to set the parent ID in the reply form
     document.querySelectorAll('.reply-link').forEach(link => {
         link.addEventListener('click', function(e) {

@@ -14,6 +14,7 @@ class Post(models.Model):
     content = models.TextField()
     date_posted = models.DateTimeField(default = timezone.now)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)
 
     # Media fields
     image = models.ImageField(upload_to='post_images/', null=True, blank=True, validators=[FileExtensionValidator(['jpg', 'png', 'gif'])])
@@ -26,6 +27,9 @@ class Post(models.Model):
                 r'^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$')
             if not re.match(youtube_regex, self.youtube_url):
                 raise ValidationError('Enter a valid YouTube URL')
+    
+    def total_likes(self):
+        return self.likes.count()
             
     
     def get_youtube_embed_url(self):

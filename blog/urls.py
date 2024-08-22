@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import home, post_detail
+from .views import home, like_post, post_detail
 from . import views
 from .views import PostListView, PostDetailView, PostCreateView, PostUpdateView, PostDeleteView, UserPostListView, mark_messages_as_read
 from django.conf import settings
@@ -21,7 +21,8 @@ urlpatterns = [
     path('register/', views.register, name='blog-register'),
     path('search/', views.search, name='search'),
     path('profile/<str:username>/', views.profile_view, name='profile-view'),
-    path('home/messages/mark-read', mark_messages_as_read, name='mark-messages-as-read'),  
+    path('home/messages/mark-read', mark_messages_as_read, name='mark-messages-as-read'), 
+    path('home/post/<int:pk>/like/', like_post, name='like-post'), 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

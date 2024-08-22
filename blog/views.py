@@ -22,7 +22,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from .forms import PostForm
-
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 
 def post_detail(request, pk):
     post = Post.objects.get(pk=pk)
@@ -107,6 +108,24 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.request.user == post.author:
             return True
         return False
+    
+
+@login_required
+@require_POST
+def like_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    if request.user in post.likes.all():
+        post.likes.remove(request.user)
+        liked = False
+    else:
+        post.likes.add(request.user)
+        liked = True
+
+    data = {
+        'liked': liked,
+        'total_likes': post.likes.count()
+    }
+    return JsonResponse(data)
     
 
 @login_required

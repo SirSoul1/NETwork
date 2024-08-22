@@ -52,6 +52,34 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+$(document).ready(function() {
+    $(".heart").on("click", function(event) {
+        event.preventDefault();
+        var $this = $(this);
+        var post_id = $this.closest("form").data("post-id");
+        var url = $this.closest("form").data("url");
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: {
+                'csrfmiddlewaretoken': csrfToken,
+                'post_id': post_id,
+            },
+            success: function(response) {
+                $this.toggleClass("is-active");
+                $("#like-count").text(response.total_likes + " Likes");
+            },
+            error: function(response) {
+                console.log("Error toggling like! Status:", response.status, response.statusText);
+            }
+        });
+    });
+});
+
+
+  
+
 
 
 

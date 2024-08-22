@@ -716,4 +716,36 @@ video {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
+/* custom css for like button */
 
+body{
+  background-color: black;
+}
+.heart {
+  width: 50px;
+  height: 50px;
+  background: url("https://cssanimation.rocks/images/posts/steps/heart.png") no-repeat;
+  background-size: cover; /* Ensure the background image covers the entire div */
+  background-position: 0 0;
+  cursor: pointer;
+  display: inline-block;
+  transition: background-position 1s steps(28);
+  transition-duration: 1s;
+}
+
+.heart.is-active {
+  transition-duration: 1s;
+  background-position: -1400px 0;
+  transform: scale(1.05);
+}
+
+.placement {
+  display: inline-block;
+  vertical-align: middle;
+
+}
+
+#like-count {
+  vertical-align: middle;
+  margin-left: 10px;
+}
