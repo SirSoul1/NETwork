@@ -32,8 +32,13 @@ class MessageForm(forms.ModelForm):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'content', 'image', 'video', 'youtube_url']
+        fields = ['title', 'content', 'image', 'video', 'youtube_url', 'spotify_url']
 
+    def clean_spotify_url(self):
+        url = self.cleaned_data.get('spotify_url')
+        if url and not "open.spotify.com" in url:
+            raise forms.ValidationError('Enter a valid Spotify URL')
+        return url
 
         
 

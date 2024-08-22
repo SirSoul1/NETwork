@@ -1,115 +1,115 @@
 {% extends "blog/base.html" %}
 {% block content %}
 <div class="container mx-auto my-8 px-4">
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-            <!-- Post Author and Date -->
-            <div class="flex items-center mb-4">
-                <img src="{{ object.author.profile.image.url }}" 
-                        class="w-12 h-12 rounded-full object-cover" 
-                        alt="Profile picture of {{ object.author }}">
-            </div>
-            <div class="flex-grow-1">
-                <h4 class="text-gray-700 mb-2">{{ object.title }}</h4>
-                <p class="text-muted mb-1">
-                    <small><a href="{% url 'user-posts' object.author.username %}">{{ object.author }} </a> - {{ object.date_posted|date:"D d M Y" }}</small>
-                {% if object.author == user %}
-                    <div>
-                        <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.id %}"> Update</a>
-                        <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-delete' object.id %}"> Delete</a>
-                    </div>
-                {% endif %}   
+    <div class="bg-primary-500 p-6 rounded-lg shadow-lg">
+        <!-- Post Author and Date -->
+        <div class="flex items-center mb-4">
+            <img src="{{ object.author.profile.image.url }}" 
+                class="w-12 h-12 rounded-full object-cover mr-4" 
+                alt="Profile picture of {{ object.author }}">
+            <div>
+                <h4 class="text-xl font-semibold text-white">{{ object.title }}</h4>
+                <p class="text-gray-400 text-sm">
+                    <small><a href="{% url 'user-posts' object.author.username %}" class="text-blue-500">{{ object.author }}</a> - {{ object.date_posted|date:"D d M Y" }}</small>
                 </p>
-
-
-
-
-                <!-- Post Content -->
-                <div class="text-gray-700 mb-4">
-                    <p>{{ object.content }}</p>
-                </div>
-        
-                <!-- Display Image -->
-                {% if post.image %}
-                <div class="my-4">
-                    <img src="{{ post.image.url }}" alt="Image for {{ post.title }}" class="w-full max-w-lg mx-auto rounded-lg shadow-md">
-                </div>
-                {% endif %}
-        
-                <!-- Display Video -->
-                {% if post.video %}
-                <div class="my-4">
-                    <video class="w-full max-w-lg mx-auto rounded-lg shadow-md" controls>
-                        <source src="{{ post.video.url }}" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-                {% endif %}
-        
-                <!-- Display YouTube Video -->
-                {% if post.youtube_url %}
-                <div class="my-4">
-                    <iframe class="w-full max-w-lg mx-auto rounded-lg shadow-md" height="315" src="{{ post.get_youtube_embed_url }}" frameborder="0" allowfullscreen></iframe>
+                {% if object.author == user %}
+                <div class="mt-2">
+                    <a class="text-sm text-white bg-gray-700 hover:bg-gray-800 py-1 px-3 rounded" href="{% url 'post-update' object.id %}">Update</a>
+                    <a class="text-sm text-white bg-red-500 hover:bg-red-600 py-1 px-3 rounded ml-2" href="{% url 'post-delete' object.id %}">Delete</a>
                 </div>
                 {% endif %}
             </div>
+        </div>
+
+        <!-- Post Content -->
+        <div class="text-gray-100 mb-4">
+            <p>{{ object.content }}</p>
+        </div>
+
+        <!-- Display Image -->
+        {% if post.image %}
+        <div class="my-4">
+            <img src="{{ post.image.url }}" alt="Image for {{ post.title }}" class="w-full max-w-xl mx-auto rounded-lg shadow-md">
+        </div>
+        {% endif %}
+
+        <!-- Display Video -->
+        {% if post.video %}
+        <div class="my-4">
+            <video class="w-full max-w-xl mx-auto rounded-lg shadow-md" controls>
+                <source src="{{ post.video.url }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        {% endif %}
+
+        <!-- Display YouTube Video -->
+        {% if post.youtube_url %}
+        <div class="my-4">
+            <iframe class="w-full max-w-xl mx-auto rounded-lg shadow-md" height="315" src="{{ post.get_youtube_embed_url }}" frameborder="0" allowfullscreen></iframe>
+        </div>
+        {% endif %}
+
+        <!-- Display Spotify Embed -->
+        {% if post.spotify_url %}
+        <div class="my-4">
+            <iframe src="{{ post.get_spotify_embed_url }}" width="100%" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media" class="w-full max-w-xl mx-auto rounded-lg shadow-md"></iframe>
+        </div>
+        {% endif %}
     </div>
 
-
     <!-- Like Button -->
-    <div class="flex items-center justify-start">
+    <div class="flex items-center justify-start mt-4">
         <form method="POST" class="like-form inline-flex items-center" data-post-id="{{ object.id }}" data-url="{% url 'like-post' object.id %}">
             {% csrf_token %}
-            <div class="heart {% if user in object.likes.all %}is-active{% endif %} "></div>
+            <div class="heart {% if user in object.likes.all %}is-active{% endif %}"></div>
         </form>
-        <span id="like-count" class="text-gray-600">{{ object.total_likes }} Likes</span>
+        <span id="like-count" class="ml-2 text-gray-600">{{ object.total_likes }} Likes</span>
     </div>
 
     <!-- Comments Section -->
-    <div class="row">
-        <div class="col-12">
-            <div class="content-section">
-                <h3>Comments</h3><br>
-                {% for comment in comments %}
-                    <div class="media mb-4">
-                        <img class="rounded-circle article-img" src="{{ comment.author.profile.image.url }}" alt="Profile picture of {{ comment.author }}" style="width: 50px; height: 50px; object-fit: cover;">
-                        <div class="media-body">
-                            <h5 class="mt-0"><a href="{% url 'profile-view' comment.author.username %}">{{ comment.author }}</a></h5>
-                            <p>{{ comment.content }}</p>
-                            <small class="text-muted">{{ comment.date_posted|date:"F d, Y H:i" }}</small>
-                            <a href="#" class="reply-link" data-comment-id="{{ comment.id }}">Reply</a>
-
-                            <!-- Nested Replies -->
-                            {% for reply in comment.replies.all %}
-                                <div class="media mt-4">
-                                    <img class="rounded-circle article-img" src="{{ reply.author.profile.image.url }}" alt="Profile picture of {{ reply.author }}" style="width: 40px; height: 40px; object-fit: cover;">
-                                    <div class="media-body">
-                                        <h6 class="mt-0"><a href="{% url 'profile-view' reply.author.username %}">{{ reply.author }}</a></h6>
-                                        <p>{{ reply.content }}</p>
-                                        <small class="text-muted">{{ reply.date_posted|date:"F d, Y H:i" }}</small>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                {% empty %}
-                    <p>No comments yet. Be the first to comment!</p>
-                {% endfor %}
-            </div>
-
-            {% if user.is_authenticated %}
-                <div class="content-section">
-                    <h3>Leave a Comment</h3>
-                    <form method="POST">
-                        {% csrf_token %}
-                        {{ comment_form.as_p }}
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>        
+    <div class="mt-8">
+        <h3 class="text-2xl font-semibold mb-4">Comments</h3>
+        {% for comment in comments %}
+        <div class="mb-6">
+            <div class="flex items-start mb-2">
+                <img class="w-10 h-10 rounded-full mr-3" src="{{ comment.author.profile.image.url }}" alt="Profile picture of {{ comment.author }}">
+                <div>
+                    <h5 class="text-md font-medium text-gray-100"><a href="{% url 'profile-view' comment.author.username %}" class="text-blue-500">{{ comment.author }}</a></h5>
+                    <p class="text-gray-300">{{ comment.content }}</p>
+                    <small class="text-gray-500">{{ comment.date_posted|date:"F d, Y H:i" }}</small>
                 </div>
-            {% else %}
-                <p>You must be <a href="{% url 'login' %}">logged in</a> to leave a comment.</p>
-            {% endif %}
+            </div>
+            <a href="#" class="text-sm text-blue-500 reply-link" data-comment-id="{{ comment.id }}">Reply</a>
+            <!-- Nested Replies -->
+            {% for reply in comment.replies.all %}
+            <div class="flex items-start mt-4 ml-10">
+                <img class="w-8 h-8 rounded-full mr-3" src="{{ reply.author.profile.image.url }}" alt="Profile picture of {{ reply.author }}">
+                <div>
+                    <h6 class="text-sm font-medium text-gray-700"><a href="{% url 'profile-view' reply.author.username %}" class="text-blue-500">{{ reply.author }}</a></h6>
+                    <p class="text-gray-300">{{ reply.content }}</p>
+                    <small class="text-gray-500">{{ reply.date_posted|date:"F d, Y H:i" }}</small>
+                </div>
+            </div>
+            {% endfor %}
         </div>
+        {% empty %}
+        <p>No comments yet. Be the first to comment!</p>
+        {% endfor %}
     </div>
+
+    {% if user.is_authenticated %}
+    <div class="mt-8">
+        <h3 class="text-2xl font-semibold mb-4">Leave a Comment</h3>
+        <form method="POST">
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg">Submit</button>
+        </form>
+    </div>
+    {% else %}
+    <p class="mt-8 text-gray-600">You must be <a href="{% url 'login' %}" class="text-blue-500">logged in</a> to leave a comment.</p>
+    {% endif %}
 </div>
 
 <script>

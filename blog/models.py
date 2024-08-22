@@ -20,6 +20,7 @@ class Post(models.Model):
     image = models.ImageField(upload_to='post_images/', null=True, blank=True, validators=[FileExtensionValidator(['jpg', 'png', 'gif'])])
     video = models.FileField(upload_to='post_videos/', null=True, blank=True, validators=[FileExtensionValidator(['mp4'])])
     youtube_url = models.URLField(null=True, blank=True)
+    spotify_url = models.URLField(null=True, blank=True)
 
     def clean(self):
         if self.youtube_url:
@@ -36,6 +37,11 @@ class Post(models.Model):
         if self.youtube_url:
             video_id = self.youtube_url.split('v=')[-1].split('&')[0]
             return f'https://www.youtube.com/embed/{video_id}'
+        return None
+    
+    def get_spotify_embed_url(self):
+        if "open.spotify.com" in self.spotify_url:
+            return self.spotify_url.replace("open.spotify.com", "embed.spotify.com").replace("/track/", "/embed/track/")
         return None
 
     def __str__(self):
