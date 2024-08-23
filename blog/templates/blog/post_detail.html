@@ -45,10 +45,10 @@
 
         <!-- Display YouTube Video -->
         {% if post.youtube_url %}
-        <div class="my-4">
-            <iframe class="w-full max-w-xl mx-auto rounded-lg shadow-md" height="315" src="{{ post.get_youtube_embed_url }}" frameborder="0" allowfullscreen></iframe>
-        </div>
+            <iframe width="560" height="315" src="{{ post.get_youtube_embed_url }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        
         {% endif %}
+
 
         <!-- Display Spotify Embed -->
         {% if post.spotify_url %}
