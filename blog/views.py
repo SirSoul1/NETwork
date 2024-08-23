@@ -259,20 +259,29 @@ def search(request):
     query = request.GET.get('q')
 
     if query:
-        try:
-            # First, try to find a user with the given username
-            user = User.objects.get(username=query)
-            # Redirect to the user's profile view if found
-            return redirect('profile-view', username=user.username)
-        except User.DoesNotExist:
-            # If no user is found, search for posts by title or content
-            post = Post.objects.filter(title__icontains=query).first()
-            if post:
-                return redirect('post-detail', pk=post.pk)
-            
-            # If no posts or users are found, return an empty results page
+        # Search for users by username
+        user_results = User.objects.filter(username__icontains=query)
+        
+        # Search for posts by title or content
+        post_results = Post.objects.filter(title__icontains=query) | Post.objects.filter(content__icontains=query)
+
+        # Pagination for posts
+        paginator = Paginator(post_results, 5)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        if user_results.exists() or post_results.exists():
+            return render(request, 'blog/post_search_results.html', {
+                'query': query,
+                'posts': page_obj,
+                'page_obj': page_obj,
+                'is_paginated': page_obj.has_other_pages(),
+                'users': user_results,
+            })
+        else:
+            # If no users or posts are found, return an empty results page
             return render(request, 'blog/search_results.html', {'query': query, 'results': None})
-    
+
     # If no query is provided, just render the search results with no results
     return render(request, 'blog/search_results.html', {'query': query, 'results': None})
 
