@@ -22,7 +22,7 @@ class CommentForm(forms.ModelForm):
 class MessageForm(forms.ModelForm):
     class Meta:
         model = Message
-        fields = ['receiver','content']
+        fields = ['receiver', 'content']
 
         widgets = {
             'receiver': forms.Select(attrs={'class': 'form-control'}),

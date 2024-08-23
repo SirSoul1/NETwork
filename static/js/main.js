@@ -77,6 +77,14 @@ $(document).ready(function() {
     });
 });
 
+document.addEventListener("DOMContentLoaded", function() {
+    var conversationContainer = document.querySelector(".conversation");
+    if (conversationContainer) {
+        conversationContainer.scrollTop = conversationContainer.scrollHeight;
+    }
+});
+
+
 
   
 

@@ -25,6 +25,9 @@ from .forms import PostForm
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 
+from django.db.models import Max
+
+
 def post_detail(request, pk):
     post = Post.objects.get(pk=pk)
     return render(request, 'blog/post_detail.html', {'post': post})
@@ -154,8 +157,13 @@ def message_list(request):
     else:
         form = MessageForm()
 
-    received_messages = Message.objects.filter(receiver=request.user).order_by('-timestamp')
-    sent_messages = Message.objects.filter(sender=request.user).order_by('-timestamp')
+    # Group received messages by sender, showing only the latest message
+    latest_received_messages = Message.objects.filter(receiver=request.user).values('sender').annotate(last_message=Max('timestamp')).order_by('-last_message')
+    received_messages = Message.objects.filter(receiver=request.user, timestamp__in=[msg['last_message'] for msg in latest_received_messages])
+
+    # Group sent messages by receiver, showing only the latest message
+    latest_sent_messages = Message.objects.filter(sender=request.user).values('receiver').annotate(last_message=Max('timestamp')).order_by('-last_message')
+    sent_messages = Message.objects.filter(sender=request.user, timestamp__in=[msg['last_message'] for msg in latest_sent_messages])
 
     # Pre-decrypt messages
     for message in received_messages:
@@ -182,6 +190,43 @@ def message_list(request):
         'sent_page_obj': sent_page_obj,
     })
 
+@login_required
+def conversation_view(request, username):
+    conversation_user = get_object_or_404(User, username=username)
+    
+    if request.method == 'POST':
+        form = MessageForm(request.POST)
+        form.fields['receiver'].initial = conversation_user
+        print("Form data before validation:", form.data)
+        
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.sender = request.user
+            message.receiver = conversation_user
+            message.save()
+            
+            print("Message saved successfully")
+            return redirect('conversation-view', username=username)
+        else:
+            print("Form is invalid:", form.errors)
+    else:
+        form = MessageForm(initial={'receiver': conversation_user})
+
+    # Fetch all messages between the two users
+    messages = Message.objects.filter(
+        (Q(sender=request.user) & Q(receiver=conversation_user)) |
+        (Q(sender=conversation_user) & Q(receiver=request.user))
+    ).order_by('timestamp')
+
+    # Decrypt messages
+    for message in messages:
+        message.decrypted_content = decrypt_message_content(message, request.user)
+
+    return render(request, 'blog/conversation_view.html', {
+        'form': form,
+        'messages': messages,
+        'conversation_user': conversation_user,
+    })
 
 def decrypt_message_content(message, user):
     try:
@@ -215,16 +260,22 @@ def search(request):
 
     if query:
         try:
-            # Check if there's a user with the given username
+            # First, try to find a user with the given username
             user = User.objects.get(username=query)
-            # Redirect to the user's profile view
+            # Redirect to the user's profile view if found
             return redirect('profile-view', username=user.username)
         except User.DoesNotExist:
-            # If no user is found, you can either redirect to an empty search result page or show a message
+            # If no user is found, search for posts by title or content
+            post = Post.objects.filter(title__icontains=query).first()
+            if post:
+                return redirect('post-detail', pk=post.pk)
+            
+            # If no posts or users are found, return an empty results page
             return render(request, 'blog/search_results.html', {'query': query, 'results': None})
     
     # If no query is provided, just render the search results with no results
     return render(request, 'blog/search_results.html', {'query': query, 'results': None})
+
 
 def profile_view(request, username):
     profile_user = get_object_or_404(User, username=username)

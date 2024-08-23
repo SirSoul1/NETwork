@@ -14,6 +14,7 @@ urlpatterns = [
     path('home/post/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'),
     path('home/messages/', views.message_list, name='message-list'),
     path('home/send/<int:pk>/', views.message_form, name='message-form'),
+    path('home/messages/coversation/<str:username>/', views.conversation_view, name='conversation-view'),
     path('about/', views.about, name='blog-about'),
     path('contact/', views.contact, name='blog-contact'),
     path('privacy/', views.privacy, name='blog-privacy'),
