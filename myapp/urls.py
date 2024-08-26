@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
+from django.urls import path, include
 
 urlpatterns = [
-    path('', views.home, name='home'),  # Example route
+    path('',include('blog.urls'))  # Example route
 ]

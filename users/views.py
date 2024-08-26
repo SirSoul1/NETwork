@@ -2,7 +2,8 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
-from django.contrib.auth.models import User  # Add this line
+from django.contrib.auth.models import User 
+from .models import Profile
 # Create your views here.
 
 def register(request):
@@ -46,3 +47,17 @@ def profile(request):
     }
 
     return render(request, 'users/profile.html', context)
+
+@login_required
+def follow_user(request, username):
+    user_to_follow = get_object_or_404(User, username=username)
+    profile = user_to_follow.profile
+
+    if request.user in profile.followers.all():
+        profile.followers.remove(request.user)
+        messages.success(request, f'You have unfollowed {user_to_follow.username}')
+    else:
+        profile.followers.add(request.user)
+        messages.success(request, f'You are now following {user_to_follow.username}')
+
+    return redirect('profile-view', username=user_to_follow.username)

@@ -69,6 +69,11 @@
                             <div class="flex-grow-1">
                                 <h4 class="mb-2">
                                     <a class="text-gray-200" href="{% url 'profile-view' user.username %}" style="text-decoration:none">{{ user.username }}</a>
+                                    {% if user in request.user.profile.followers.all %}
+                                        <a class="btn btn-secondary" href="{% url 'follow-user' user.username %}">Unfollow</a>
+                                    {% else %}
+                                        <a class="btn btn-primary" href="{% url 'follow-user' user.username %}">Follow</a>
+                                    {% endif %}
                                 </h4>
                                 <p class="text-muted mb-1">
                                     {{ user.profile.bio }}

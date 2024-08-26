@@ -25,9 +25,19 @@
             <hr>
             <h5>Profile Info</h5>
             <p>{{ profile_user.profile.bio }}</p> 
+
+            <p>Followers: {{ profile_user.profile.get_followers_count }}</p>
+            <p>Following: {{ profile_user.profile.get_following_count }}</p>
+
             <!-- Edit Profile button if the logged in user is viewing their own profile -->
              {% if profile_user == user %}
                 <a class="btn btn-primary" href="{% url 'profile' %}">Edit Profile</a>
+            {% else %}
+                {% if user in profile_user.profile.followers.all %}
+                    <a class="btn btn-secondary" href="{% url 'follow-user' profile_user.username %}">Unfollow</a>
+                {% else %}
+                    <a class="btn btn-primary" href="{% url 'follow-user' profile_user.username %}">Follow</a>
+                {% endif %}
             {% endif %}
         </div>
     </div>

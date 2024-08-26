@@ -4,9 +4,10 @@ from . import views
 from .views import PostListView, PostDetailView, PostCreateView, PostUpdateView, PostDeleteView, UserPostListView, mark_messages_as_read
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
-    path('home/', PostListView.as_view(), name='blog-home'),
+    path('home/', login_required(PostListView.as_view()), name='blog-home'),
     path('user/<str:username>', UserPostListView.as_view(), name='user-posts'),
     path('home/post/<int:pk>/', PostDetailView.as_view(), name='post-detail'),
     path('home/post/new/', PostCreateView.as_view(), name='post-create'),

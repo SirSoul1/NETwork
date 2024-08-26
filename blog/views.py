@@ -32,18 +32,40 @@ def post_detail(request, pk):
     post = Post.objects.get(pk=pk)
     return render(request, 'blog/post_detail.html', {'post': post})
 
+@login_required
 def home(request):
+
+    # Get the profiles the current user is following
+    following_users = request.user.following.all()
+    
+    # Add the current user to the list of following users
+    following_users = following_users | User.objects.filter(id=request.user.id)
+
+    # Include the logged-in user's own posts
+    posts = Post.objects.filter(
+        Q(author__in=following_users) | Q(author=request.user)
+    ).order_by('-date_posted')
+    
     context = {
-        'posts': Post.objects.all()
+        'posts': posts,
     }
     return render(request, 'blog/home.html', context)
 
-class PostListView(ListView):
+class PostListView(LoginRequiredMixin,ListView):
     model = Post
     template_name = 'blog/home.html' # <app>/<model>_<viewtype>.html
     context_object_name = 'posts'
     ordering = ['-date_posted']
     paginate_by = 5
+
+    def get_queryset(self):
+        # Get the profiles the current user is following
+        following_users = self.request.user.following.values_list('id', flat=True)
+
+        # Include the logged-in user's own posts
+        return Post.objects.filter(
+            Q(author__in=following_users) | Q(author=self.request.user)
+        ).order_by('-date_posted')
 
 
 class UserPostListView(ListView):
@@ -53,8 +75,18 @@ class UserPostListView(ListView):
     paginate_by = 5
 
     def get_queryset(self):
+        # Get the user whose posts are being viewed
         user = get_object_or_404(User, username=self.kwargs.get('username'))
+
+        # filter posts by this user, ordered by date posted
         return Post.objects.filter(author=user).order_by('-date_posted')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['profile_user'] = get_object_or_404(User, username=self.kwargs.get('username'))
+        return context
+
+    
 
     
 class PostDetailView(DetailView):
