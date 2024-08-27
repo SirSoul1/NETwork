@@ -13,7 +13,7 @@ from .models import Message
 from .forms import MessageForm
 from cryptography.fernet import Fernet
 from cryptography.fernet import InvalidToken
-from django.contrib import messages as django_messages
+from django.contrib import messages
 from .models import Post, Comment
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Q
@@ -26,6 +26,9 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 
 from django.db.models import Max
+
+from django.db.models import Count 
+from django.core.paginator import Paginator
 
 
 def post_detail(request, pk):
@@ -179,15 +182,15 @@ def message_form(request):
 @login_required
 def message_list(request):
     if request.method == 'POST':
-        form = MessageForm(request.POST)
+        form = MessageForm(request.POST, user=request.user)
         if form.is_valid():
             message = form.save(commit=False)
             message.sender = request.user
             message.save()
-            django_messages.success(request, "Message sent successfully!")
+            messages.success(request, "Message sent successfully!")
             return redirect('message-list')  # Redirect to avoid resubmission of form
     else:
-        form = MessageForm()
+        form = MessageForm(user=request.user)
 
     # Group received messages by sender, showing only the latest message
     latest_received_messages = Message.objects.filter(receiver=request.user).values('sender').annotate(last_message=Max('timestamp')).order_by('-last_message')
@@ -225,38 +228,42 @@ def message_list(request):
 @login_required
 def conversation_view(request, username):
     conversation_user = get_object_or_404(User, username=username)
+
+    # Check if the current user is following the conversation user
+    if not request.user.following.filter(id=conversation_user.id).exists():
+        messages.error(request, "You can only send messages to people you follow.")
+        return redirect('message-list')
     
     if request.method == 'POST':
         form = MessageForm(request.POST)
         form.fields['receiver'].initial = conversation_user
-        print("Form data before validation:", form.data)
         
         if form.is_valid():
             message = form.save(commit=False)
             message.sender = request.user
             message.receiver = conversation_user
             message.save()
-            
-            print("Message saved successfully")
+
+            messages.success(request, "Message sent successfully!")
             return redirect('conversation-view', username=username)
         else:
-            print("Form is invalid:", form.errors)
+            messages.error(request, "Message failed to send.")
     else:
         form = MessageForm(initial={'receiver': conversation_user})
 
     # Fetch all messages between the two users
-    messages = Message.objects.filter(
+    conversation_messages = Message.objects.filter(
         (Q(sender=request.user) & Q(receiver=conversation_user)) |
         (Q(sender=conversation_user) & Q(receiver=request.user))
     ).order_by('timestamp')
 
     # Decrypt messages
-    for message in messages:
+    for message in conversation_messages:
         message.decrypted_content = decrypt_message_content(message, request.user)
 
     return render(request, 'blog/conversation_view.html', {
         'form': form,
-        'messages': messages,
+        'messages': conversation_messages,  # Ensure this variable is correctly named
         'conversation_user': conversation_user,
     })
 
@@ -323,7 +330,22 @@ def profile_view(request, username):
     return render(request, 'users/profile_view.html', {'profile_user': profile_user})
 
 
+# view method that retrieves the most active users
+def most_active_users(request):
+    users = User.objects.annotate(post_count=Count('post')).order_by('-post_count')
 
+
+    # Pagination
+    paginator = Paginator(users, 6)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'users': page_obj,
+        'page_obj': page_obj,
+        'is_paginated': page_obj.has_other_pages(),
+    }
+    return render(request, 'blog/most_active_users.html', context)
 
 
 

@@ -25,6 +25,7 @@ urlpatterns = [
     path('profile/<str:username>/', views.profile_view, name='profile-view'),
     path('home/messages/mark-read', mark_messages_as_read, name='mark-messages-as-read'), 
     path('home/post/<int:pk>/like/', like_post, name='like-post'), 
+    path('home/most-active-users/', views.most_active_users, name='most-active-users'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

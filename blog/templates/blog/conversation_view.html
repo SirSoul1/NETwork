@@ -19,19 +19,25 @@
         </ul>
     </div>
 
-    <!-- Reply Form -->
-    <div class="mt-8">
-        <h3 class="text-xl font-semibold text-gray-200">Send a Message</h3>
-        <form method="post" class="mt-4">
-            {% csrf_token %}
-            <div class="mb-4">
-                {{ form.receiver.as_hidden }}
-                {{ form.content|as_crispy_field }}  
-            </div>
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300">
-                Send Message
-            </button>
-        </form>
+    {% if user in conversation_user.profile.followers.all %}
+
+        <!-- Reply Form -->
+        <div class="mt-8">
+            <h3 class="text-xl font-semibold text-gray-200">Send a Message</h3>
+            <form method="post" class="mt-4">
+                {% csrf_token %}
+                <div class="mb-4">
+                    {{ form.receiver.as_hidden }}
+                    {{ form.content|as_crispy_field }}  
+                </div>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300">
+                    Send Message
+                </button>
+            </form>
+        </div>
+    {% else %}
+        <p class="mt-8 text-red-500">You must follow this user to send a message!</p>
+    {% endif %}
+
     </div>
-</div>
 {% endblock %}

@@ -2,6 +2,7 @@
 
 from django import forms
 from .models import Comment, Message, Post
+from django.contrib.auth.models import User
 
 class CommentForm(forms.ModelForm):
     content = forms.CharField(widget=forms.Textarea(attrs={
@@ -28,7 +29,13 @@ class MessageForm(forms.ModelForm):
             'receiver': forms.Select(attrs={'class': 'form-control'}),
             'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Type your message here...'})
         }
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user',None)
+        super(MessageForm, self).__init__(*args, **kwargs)
+        if user:
+            self.fields['receiver'].queryset = User.objects.filter(profile__followers=user)
 
+    
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post

@@ -1,44 +1,60 @@
-<!-- users/templates/users/profile_view.html -->
-
 {% extends "blog/base.html" %}
-{% load static %}  <!-- Add this line at the top -->
+{% load static %}
 
 {% block content %}
-<div class="container my-4">
-    <div class="row">
-        <div class="col-md-4">
-            {% if profile_user.profile.image %}
-                <img src="{{ profile_user.profile.image.url }}" 
-                     class="img-fluid rounded-circle" 
-                     style="width: 150px; height: 150px; object-fit: cover;"
-                     alt="Profile picture of {{ profile_user.username }}">
-            {% else %}
-                <img src="{% static 'default.jpg' %}" 
-                     class="img-fluid rounded-circle" 
-                     style="width: 150px; height: 150px; object-fit: cover;"
-                     alt="Default profile picture">
-            {% endif %}
-        </div>
-        <div class="col-md-8">
-            <h3>{{ profile_user.username }}</h3>
-            <p>{{ profile_user.email }}</p>
-            <hr>
-            <h5>Profile Info</h5>
-            <p>{{ profile_user.profile.bio }}</p> 
-
-            <p>Followers: {{ profile_user.profile.get_followers_count }}</p>
-            <p>Following: {{ profile_user.profile.get_following_count }}</p>
-
-            <!-- Edit Profile button if the logged in user is viewing their own profile -->
-             {% if profile_user == user %}
-                <a class="btn btn-primary" href="{% url 'profile' %}">Edit Profile</a>
-            {% else %}
-                {% if user in profile_user.profile.followers.all %}
-                    <a class="btn btn-secondary" href="{% url 'follow-user' profile_user.username %}">Unfollow</a>
+<div class="container mx-auto my-8 p-6 bg-gray-900 rounded-lg shadow-md">
+    <div class="flex items-center space-x-8">
+        <!-- Profile Image Section -->
+        <div class="w-1/4">
+            <div class="flex justify-center">
+                {% if profile_user.profile.image %}
+                    <img src="{{ profile_user.profile.image.url }}" 
+                         class="w-40 h-40 rounded-full object-cover shadow-lg" 
+                         alt="Profile picture of {{ profile_user.username }}">
                 {% else %}
-                    <a class="btn btn-primary" href="{% url 'follow-user' profile_user.username %}">Follow</a>
+                    <img src="{% static 'default.jpg' %}" 
+                         class="w-40 h-40 rounded-full object-cover shadow-lg" 
+                         alt="Default profile picture">
                 {% endif %}
-            {% endif %}
+            </div>
+        </div>
+
+        <!-- Profile Information Section -->
+        <div class="w-3/4">
+            <h1 class="text-4xl font-semibold text-gray-100">{{ profile_user.username }}</h1>
+            <p class="text-gray-400">{{ profile_user.email }}</p>
+            <hr class="my-4 border-gray-600">
+            
+            <div class="text-gray-300 space-y-4">
+                <h2 class="text-2xl font-semibold">Profile Info</h2>
+                <p class="text-lg">{{ profile_user.profile.bio }}</p> 
+
+                <div class="flex space-x-8">
+                    <p class="text-lg">
+                        <span class="font-semibold">Followers:</span> {{ profile_user.profile.get_followers_count }}
+                    </p>
+                    <p class="text-lg">
+                        <span class="font-semibold">Following:</span> {{ profile_user.profile.get_following_count }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="mt-6">
+                {% if profile_user == user %}
+                    <a class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300" href="{% url 'profile' %}">Edit Profile</a>
+                {% else %}
+                    {% if user in profile_user.profile.followers.all %}
+                        <a class="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800 transition duration-300" href="{% url 'follow-user' profile_user.username %}">Unfollow</a>
+                    {% else %}
+                        <a class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300" href="{% url 'follow-user' profile_user.username %}">Follow</a>
+                    {% endif %}
+
+                    {% if user in profile_user.profile.followers.all %}
+                        <a class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300" href="{% url 'conversation-view' profile_user.username %}">Send Message</a>
+                    {% endif %}
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>
