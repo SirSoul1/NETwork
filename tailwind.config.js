@@ -22,6 +22,7 @@ module.exports = {
       },
       animation: {
         'zoom-in': 'zoom-in 0.5s ease-out',
+        
       },
     },
   },
